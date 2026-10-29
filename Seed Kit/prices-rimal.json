@@ -1,0 +1,18 @@
+{
+  "tenant": "rimal",
+  "version": "2026-11-01",
+  "currency": "SAR",
+  "prices_exclude_vat": true,
+  "rows": [
+    { "id": "R-STG-001", "item": "Modular stage deck, 1 x 2 m", "item_ar": "لوح مسرح معياري 1 × 2 م", "per_day": 120.00 },
+    { "id": "R-LED-001", "item": "LED screen P3.9, per m²", "item_ar": "شاشة LED بدقة P3.9، للمتر المربع", "per_day": 350.00 },
+    { "id": "R-AUD-001", "item": "Line-array speakers (pair) with mixer", "item_ar": "سماعات لاين أراي (زوج) مع ميكسر", "per_day": 1400.00 },
+    { "id": "R-MIC-001", "item": "Wireless microphone", "item_ar": "ميكروفون لاسلكي", "per_day": 90.00 },
+    { "id": "R-CHR-001", "item": "Chiavari chair, white", "item_ar": "كرسي شيافاري أبيض", "per_day": 18.00 },
+    { "id": "R-TBL-001", "item": "Round table 180 cm with linen", "item_ar": "طاولة دائرية 180 سم مع مفرش", "per_day": 75.00 },
+    { "id": "R-TNT-001", "item": "Clear-span tent, 10 x 20 m", "item_ar": "خيمة بدون أعمدة 10 × 20 م", "per_day": 9500.00 },
+    { "id": "R-GEN-001", "item": "Diesel generator, 100 kVA", "item_ar": "مولد ديزل 100 كيلو فولت أمبير", "per_day": 1800.00 },
+    { "id": "R-CRW-001", "item": "Setup crew, 4 people, 8-hour shift", "item_ar": "طاقم تركيب، 4 أشخاص، وردية 8 ساعات", "per_shift": 2200.00 },
+    { "id": "R-DLV-001", "item": "Delivery and collection within Riyadh, per trip", "item_ar": "توصيل واستلام داخل الرياض، للرحلة", "flat": 450.00 }
+  ]
+}

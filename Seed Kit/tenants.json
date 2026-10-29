@@ -1,0 +1,66 @@
+{
+  "tenants": [
+    {
+      "id": "qamar",
+      "name": "Qamar Devices LLC",
+      "location": "Dubai, UAE",
+      "sells": "Laptop, phone, tablet and monitor rental and sales to companies",
+      "currency": "AED",
+      "currency_minor_units": 2,
+      "vat_rate": 0.05,
+      "languages": ["en", "ar"],
+      "channels": [
+        { "channel": "whatsapp", "address": "+971 4 000 0101" },
+        { "channel": "email", "address": "sales@qamar.example" },
+        { "channel": "webform", "address": "web:qamar" }
+      ],
+      "auto_send": "low_risk_only",
+      "approvers": [
+        { "id": "u_aisha", "name": "Aisha K.", "role": "Sales lead" },
+        { "id": "u_rahul", "name": "Rahul M.", "role": "General manager" }
+      ],
+      "policy": {
+        "discount_needs_approval_at_pct": 10,
+        "service_area": ["Dubai", "Sharjah"],
+        "outside_service_area": "hand_off"
+      },
+      "faq": [
+        "Rental prices include accidental-damage cover. Theft is not covered.",
+        "Company rentals need a copy of the trade licence before delivery.",
+        "The minimum rental is one month. Rentals longer than 12 months go to the general manager.",
+        "Delivery and setup (Q-SVC-001) is charged once per order."
+      ]
+    },
+    {
+      "id": "rimal",
+      "name": "Rimal Event Supply",
+      "location": "Riyadh, KSA",
+      "sells": "Event equipment rental: staging, screens, audio, furniture, tents, power",
+      "currency": "SAR",
+      "currency_minor_units": 2,
+      "vat_rate": 0.15,
+      "languages": ["ar", "en"],
+      "channels": [
+        { "channel": "whatsapp", "address": "+966 11 000 0202" },
+        { "channel": "email", "address": "events@rimal.example" }
+      ],
+      "auto_send": "off",
+      "approvers": [
+        { "id": "u_faisal", "name": "Faisal A.", "role": "Owner" },
+        { "id": "u_noura", "name": "Noura S.", "role": "Operations manager" }
+      ],
+      "policy": {
+        "discount_needs_approval_at_pct": 5,
+        "service_area": ["Riyadh"],
+        "outside_service_area": "hand_off",
+        "minimum_order_before_vat": 2000
+      },
+      "faq": [
+        "Rates are per event day.",
+        "A setup crew (R-CRW-001, one shift per order) is required for stages larger than 12 m², LED screens larger than 6 m², and all tents.",
+        "A 30% deposit confirms a booking. Only the operations manager confirms availability.",
+        "Orders under 2,000 SAR before VAT are not accepted."
+      ]
+    }
+  ]
+}

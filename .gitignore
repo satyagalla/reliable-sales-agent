@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.tools/
+.env
+.env.local
+data/*.sqlite*
+data/*.log
+*.tsbuildinfo
+test-results/

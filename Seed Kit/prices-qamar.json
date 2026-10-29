@@ -1,0 +1,18 @@
+{
+  "tenant": "qamar",
+  "version": "2026-11-01",
+  "currency": "AED",
+  "prices_exclude_vat": true,
+  "rows": [
+    { "id": "Q-LAP-001", "item": "MacBook Air 13\" M4, 16 GB, 512 GB", "rent_per_month": 180.00, "buy": 4899.00 },
+    { "id": "Q-LAP-002", "item": "Dell Latitude 5450, Core Ultra 7, 16 GB", "rent_per_month": 140.00, "buy": 3950.00 },
+    { "id": "Q-LAP-003", "item": "Lenovo ThinkPad T14 Gen 5, 16 GB", "rent_per_month": 135.00, "buy": 3799.00 },
+    { "id": "Q-PHN-001", "item": "iPhone 16, 128 GB", "rent_per_month": 120.00, "buy": 3399.00 },
+    { "id": "Q-PHN-002", "item": "Samsung Galaxy S24, 256 GB", "rent_per_month": 110.00, "buy": 3199.00 },
+    { "id": "Q-TAB-001", "item": "iPad Air 11\" M2, 128 GB", "rent_per_month": 95.00, "buy": 2599.00 },
+    { "id": "Q-MON-001", "item": "Dell 27\" 4K monitor U2723QE", "rent_per_month": 60.00, "buy": 1899.00 },
+    { "id": "Q-MON-002", "item": "LG 34\" UltraWide monitor", "rent_per_month": 75.00, "buy": 1649.00 },
+    { "id": "Q-ACC-001", "item": "USB-C docking station", "rent_per_month": 15.00, "buy": 399.00 },
+    { "id": "Q-SVC-001", "item": "Delivery and setup, Dubai or Sharjah, per order", "flat": 150.00 }
+  ]
+}
