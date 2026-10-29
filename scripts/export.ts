@@ -1,6 +1,7 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { all } from "../src/lib/db";
 import { calibration } from "../src/lib/quality";
+import { snapshot } from "../src/lib/snapshots";
 mkdirSync("artifacts", { recursive: true });
 const runs = all<{ id: string; kind: string; source: string; summary: string }>(
   "SELECT * FROM runs ORDER BY rowid",
@@ -37,6 +38,10 @@ for (const run of runs) {
 const provenance = all(
   "SELECT * FROM audit WHERE kind=? ORDER BY id",
   "llm_call",
+);
+writeFileSync(
+  "artifacts/stored-data.json",
+  JSON.stringify(snapshot(), null, 2) + "\n",
 );
 writeFileSync(
   "artifacts/model-calls.json",

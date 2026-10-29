@@ -5,6 +5,7 @@ import { persistDraft } from "../src/lib/workflow";
 import { fixture } from "../src/lib/fixtures";
 import { ChannelEvent, Tenant } from "../src/lib/domain";
 import { runEvaluation } from "../src/lib/quality";
+import { restoreSnapshot } from "../src/lib/snapshots";
 
 async function main() {
   const tenants = JSON.parse(readFileSync("Seed Kit/tenants.json", "utf8"))
@@ -25,6 +26,12 @@ async function main() {
           .run(t.id, row.id, prices.version, JSON.stringify(row));
     }
   });
+  if (!process.argv.includes("--live") && restoreSnapshot()) {
+    console.log(
+      "Restored recorded model runs, inbox, audit and personal labels from committed stored data. Trust starts supervised; no model calls or deliveries replayed.",
+    );
+    return;
+  }
   const events = readFileSync("Seed Kit/events.jsonl", "utf8")
     .trim()
     .split(/\r?\n/)
