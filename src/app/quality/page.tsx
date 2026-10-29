@@ -1,23 +1,310 @@
-import Link from 'next/link';
-import { all,one } from '@/lib/db';
-import { Tenant } from '@/lib/domain';
-import { calibration,dimensions } from '@/lib/quality';
-import { HumanLabel,TrustControls } from '../components';
-export const dynamic='force-dynamic';
-type Run={id:string;name:string;kind:string;source:string;suite_version:string;summary:string;created_at:string};
-type Result={id:string;case_id:string;tenant:string;input:string;output:string;checks:string;judge:string|null;human:string|null};
-export default async function Quality({searchParams}:{searchParams:Promise<{run?:string;tenant?:string}>}){
-  const params=await searchParams,runs=all<Run>('SELECT * FROM runs ORDER BY rowid DESC');const run=runs.find(r=>r.id===params.run)||runs.find(r=>r.kind==='baseline')||runs[0];
-  const tenants=all<{id:string;config:string;trust:string}>('SELECT * FROM tenants');
-  const results=run?all<Result>('SELECT * FROM results WHERE run_id=? ORDER BY tenant,case_id',run.id):[],cal=calibration(results),summary=run?JSON.parse(run.summary):null;
-  return <><header><div><div className="eyebrow">ASSURANCE / QUALITY & TRUST</div><h1>Trust is earned.<br/><span>And measured.</span></h1><p>Versioned cases, explicit judgements, and human calibration.</p></div><span className="badge">36 CASES · SUITE V1.0</span></header>
-    <div className="trust-grid">{tenants.map(row=>{const t=JSON.parse(row.config) as Tenant;return <section className="panel" key={t.id}><div className="card-top"><h2>{t.name}</h2><span className={'badge '+(row.trust==='autonomous'?'green':'amber')}>{row.trust}</span></div><p>{t.auto_send==='off'?'Tenant policy: every reply needs approval.':'Autonomous sending applies only to low-risk FAQ replies.'}</p><TrustControls tenant={t.id} approvers={t.approvers} state={row.trust}/><small>Promotion requires a passing live gate, ten personal labels overall, at least five here, and ≥80% dimension agreement. Demotion is automatic on a failed live run.</small></section>;})}</div>
-    <div className="section-heading"><h2>Evaluation runs</h2><small>Fixtures never qualify for promotion.</small></div>
-    <div className="run-list">{runs.map(r=>{const s=JSON.parse(r.summary);return <Link className={'run '+(r.id===run?.id?'selected':'')} href={'/quality?run='+r.id} key={r.id}><div><b>{r.name}</b><small>{r.suite_version} · {r.created_at}</small></div><span className={'badge '+(s.gate_pass?'green':'amber')}>{s.status==='running'?'RUNNING':s.gate_pass?'GATE PASS':'GATE BLOCKED'}</span><span>{s.total??'—'} cases · {s.failed??'—'} failures</span></Link>;})}</div>
-    {run&&<><div className="stats"><div><span>Deterministic checks</span><strong>{summary.total-summary.failed}<em> / {summary.total}</em></strong><small>{summary.failed} cases fail expectations</small></div><div><span>Judge failures</span><strong>{run.source==='fixture'?'—':summary.judge_failures}</strong><small>{run.source==='fixture'?'No LLM judge call made':`${summary.not_assessable} not assessable dimensions`}</small></div><div><span>Personal labels</span><strong>{cal.labelled}<em> / 10</em></strong><small>{cal.assessed} comparable dimension labels</small></div><div><span>Human / judge agreement</span><strong>{cal.agreement===null?'—':Math.round(cal.agreement*100)+'%'}</strong><small>{cal.matched} exact matches · {cal.notAssessable} unavailable</small></div></div>
-    <div className="notice">{run.source==='fixture'?<><b>Fixture run.</b> These are hand-authored draft extractions checked by real deterministic code. No model judgements or human calibration are claimed.</>:<><b>Live model run.</b> Drafts and judge calls are audited. Personally inspect at least ten outputs, including five per tenant, before promoting trust.</>} {run.kind==='degraded'&&'This run deliberately injects foreign catalogue rows and unsafe draft text to demonstrate gate rejection.'} {summary.baseline_id&&<>Compared with baseline <code>{summary.baseline_id.slice(0,8)}</code>: {summary.regression_pass?'no regression':'regression detected'}.</>}</div>
-    <div className="section-heading"><h2>Case evidence</h2><div className="tabs compact"><Link href={`/quality?run=${run.id}`}>Both tenants</Link><Link href={`/quality?run=${run.id}&tenant=qamar`}>Qamar</Link><Link href={`/quality?run=${run.id}&tenant=rimal`}>Rimal</Link></div></div>
-    {results.filter(r=>!params.tenant||r.tenant===params.tenant).map(r=>{const input=JSON.parse(r.input),output=JSON.parse(r.output),checks=JSON.parse(r.checks) as {name:string;pass:boolean;detail?:string}[],judge=r.judge?JSON.parse(r.judge):null;return <details className="panel case" key={r.id}><summary><b>{r.case_id.toUpperCase()}</b> <span className={'badge '+(checks.every(c=>c.pass)?'green':'amber')}>{checks.every(c=>c.pass)?'CHECKS PASS':'FAILED'}</span> <span>{input.text}</span> {r.human&&<span className="badge">HUMAN LABELLED</span>}</summary><div className="case-body"><p dir="auto" className="customer">{input.text}</p><div className="tags">{input.tags.map((tag:string)=><span key={tag} className="badge muted">{tag}</span>)}</div><div className="review-grid"><section><h4>Output to assess</h4><pre className="reply" dir={input.language==='ar'?'rtl':'ltr'}>{output.reply||output.error}</pre><details><summary>Structured extraction & calculations</summary><pre>{JSON.stringify(output,null,2)}</pre></details><h4>Deterministic expectations</h4>{checks.map((c,i)=><p key={i} className={c.pass?'check-pass':'error'}>{c.pass?'✓':'×'} {c.name} <small>{c.detail}</small></p>)}</section><section><h4>LLM judge · three behaviour dimensions</h4>{dimensions.map(key=><div className="judge" key={key}><b>{key.replaceAll('_',' ')}</b><span className="badge">{judge?judge[key].not_assessable?'NOT ASSESSABLE':judge[key].score+' / 2':'NOT RUN'}</span><p>{judge?judge[key].rationale:'No real LLM judgement is stored for this result.'}</p></div>)}<HumanLabel resultId={r.id} existing={r.human}/></section></div></div></details>;})}</>}
-    <details className="panel"><summary>Trust transition history</summary><pre>{JSON.stringify(all('SELECT * FROM trust_history ORDER BY id DESC LIMIT 50'),null,2)}</pre></details>
-  </>;
+import Link from "next/link";
+import { all, one } from "@/lib/db";
+import { Tenant } from "@/lib/domain";
+import { calibration, dimensions } from "@/lib/quality";
+import { SUITE_VERSION } from "@/lib/cases";
+import { HumanLabel, TrustControls } from "../components";
+export const dynamic = "force-dynamic";
+type Run = {
+  id: string;
+  name: string;
+  kind: string;
+  source: string;
+  suite_version: string;
+  summary: string;
+  created_at: string;
+};
+type Result = {
+  id: string;
+  case_id: string;
+  tenant: string;
+  input: string;
+  output: string;
+  checks: string;
+  judge: string | null;
+  human: string | null;
+};
+export default async function Quality({
+  searchParams,
+}: {
+  searchParams: Promise<{ run?: string; tenant?: string }>;
+}) {
+  const params = await searchParams,
+    runs = all<Run>("SELECT * FROM runs ORDER BY rowid DESC");
+  const run =
+    runs.find((r) => r.id === params.run) ||
+    runs.find((r) => r.kind === "baseline") ||
+    runs[0];
+  const tenants = all<{ id: string; config: string; trust: string }>(
+    "SELECT * FROM tenants",
+  );
+  const results = run
+      ? all<Result>(
+          "SELECT * FROM results WHERE run_id=? ORDER BY tenant,case_id",
+          run.id,
+        )
+      : [],
+    cal = calibration(results),
+    summary = run ? JSON.parse(run.summary) : null;
+  return (
+    <>
+      <header>
+        <div>
+          <div className="eyebrow">ASSURANCE / QUALITY & TRUST</div>
+          <h1>
+            Trust is earned.
+            <br />
+            <span>And measured.</span>
+          </h1>
+          <p>Versioned cases, explicit judgements, and human calibration.</p>
+        </div>
+        <span className="badge">36 CASES · {SUITE_VERSION}</span>
+      </header>
+      <div className="trust-grid">
+        {tenants.map((row) => {
+          const t = JSON.parse(row.config) as Tenant;
+          return (
+            <section className="panel" key={t.id}>
+              <div className="card-top">
+                <h2>{t.name}</h2>
+                <span
+                  className={
+                    "badge " + (row.trust === "autonomous" ? "green" : "amber")
+                  }
+                >
+                  {row.trust}
+                </span>
+              </div>
+              <p>
+                {t.auto_send === "off"
+                  ? "Tenant policy: every reply needs approval."
+                  : "Autonomous sending applies only to low-risk FAQ replies."}
+              </p>
+              <TrustControls
+                tenant={t.id}
+                approvers={t.approvers}
+                state={row.trust}
+              />
+              <small>
+                Promotion requires a passing live gate, ten personal labels
+                overall, at least five here, and ≥80% dimension agreement.
+                Demotion is automatic on a failed live run.
+              </small>
+            </section>
+          );
+        })}
+      </div>
+      <div className="section-heading">
+        <h2>Evaluation runs</h2>
+        <small>Fixtures never qualify for promotion.</small>
+      </div>
+      <div className="run-list">
+        {runs.map((r) => {
+          const s = JSON.parse(r.summary);
+          return (
+            <Link
+              className={"run " + (r.id === run?.id ? "selected" : "")}
+              href={"/quality?run=" + r.id}
+              key={r.id}
+            >
+              <div>
+                <b>{r.name}</b>
+                <small>
+                  {r.suite_version} · {r.created_at}
+                </small>
+              </div>
+              <span className={"badge " + (s.gate_pass ? "green" : "amber")}>
+                {s.status === "running"
+                  ? "RUNNING"
+                  : s.gate_pass
+                    ? "GATE PASS"
+                    : "GATE BLOCKED"}
+              </span>
+              <span>
+                {s.total ?? "—"} cases · {s.failed ?? "—"} failures
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+      {run && (
+        <>
+          <div className="stats">
+            <div>
+              <span>Deterministic checks</span>
+              <strong>
+                {summary.total - summary.failed}
+                <em> / {summary.total}</em>
+              </strong>
+              <small>{summary.failed} cases fail expectations</small>
+            </div>
+            <div>
+              <span>Judge failures</span>
+              <strong>
+                {run.source === "fixture" ? "—" : summary.judge_failures}
+              </strong>
+              <small>
+                {run.source === "fixture"
+                  ? "No LLM judge call made"
+                  : `${summary.not_assessable} not assessable dimensions`}
+              </small>
+            </div>
+            <div>
+              <span>Personal labels</span>
+              <strong>
+                {cal.labelled}
+                <em> / 10</em>
+              </strong>
+              <small>{cal.assessed} comparable dimension labels</small>
+            </div>
+            <div>
+              <span>Human / judge agreement</span>
+              <strong>
+                {cal.agreement === null
+                  ? "—"
+                  : Math.round(cal.agreement * 100) + "%"}
+              </strong>
+              <small>
+                {cal.matched} exact matches · {cal.notAssessable} unavailable
+              </small>
+            </div>
+          </div>
+          <div className="notice">
+            {run.source === "fixture" ? (
+              <>
+                <b>Fixture run.</b> These are hand-authored draft extractions
+                checked by real deterministic code. No model judgements or human
+                calibration are claimed.
+              </>
+            ) : (
+              <>
+                <b>Live model run.</b> Drafts and judge calls are audited.
+                Personally inspect at least ten outputs, including five per
+                tenant, before promoting trust.
+              </>
+            )}{" "}
+            {run.kind === "degraded" &&
+              "This run deliberately injects foreign catalogue rows and unsafe draft text to demonstrate gate rejection."}{" "}
+            {summary.baseline_id && (
+              <>
+                Compared with baseline{" "}
+                <code>{summary.baseline_id.slice(0, 8)}</code>:{" "}
+                {summary.regression_pass
+                  ? "no regression"
+                  : "regression detected"}
+                .
+              </>
+            )}
+          </div>
+          <div className="section-heading">
+            <h2>Case evidence</h2>
+            <div className="tabs compact">
+              <Link href={`/quality?run=${run.id}`}>Both tenants</Link>
+              <Link href={`/quality?run=${run.id}&tenant=qamar`}>Qamar</Link>
+              <Link href={`/quality?run=${run.id}&tenant=rimal`}>Rimal</Link>
+            </div>
+          </div>
+          {results
+            .filter((r) => !params.tenant || r.tenant === params.tenant)
+            .map((r) => {
+              const input = JSON.parse(r.input),
+                output = JSON.parse(r.output),
+                checks = JSON.parse(r.checks) as {
+                  name: string;
+                  pass: boolean;
+                  detail?: string;
+                }[],
+                judge = r.judge ? JSON.parse(r.judge) : null;
+              return (
+                <details className="panel case" key={r.id}>
+                  <summary>
+                    <b>{r.case_id.toUpperCase()}</b>{" "}
+                    <span
+                      className={
+                        "badge " +
+                        (checks.every((c) => c.pass) ? "green" : "amber")
+                      }
+                    >
+                      {checks.every((c) => c.pass) ? "CHECKS PASS" : "FAILED"}
+                    </span>{" "}
+                    <span>{input.text}</span>{" "}
+                    {r.human && <span className="badge">HUMAN LABELLED</span>}
+                  </summary>
+                  <div className="case-body">
+                    <p dir="auto" className="customer">
+                      {input.text}
+                    </p>
+                    <div className="tags">
+                      {input.tags.map((tag: string) => (
+                        <span key={tag} className="badge muted">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="review-grid">
+                      <section>
+                        <h4>Output to assess</h4>
+                        <pre
+                          className="reply"
+                          dir={input.language === "ar" ? "rtl" : "ltr"}
+                        >
+                          {output.reply || output.error}
+                        </pre>
+                        <details>
+                          <summary>
+                            Structured extraction & calculations
+                          </summary>
+                          <pre>{JSON.stringify(output, null, 2)}</pre>
+                        </details>
+                        <h4>Deterministic expectations</h4>
+                        {checks.map((c, i) => (
+                          <p
+                            key={i}
+                            className={c.pass ? "check-pass" : "error"}
+                          >
+                            {c.pass ? "✓" : "×"} {c.name}{" "}
+                            <small>{c.detail}</small>
+                          </p>
+                        ))}
+                      </section>
+                      <section>
+                        <h4>LLM judge · three behaviour dimensions</h4>
+                        {dimensions.map((key) => (
+                          <div className="judge" key={key}>
+                            <b>{key.replaceAll("_", " ")}</b>
+                            <span className="badge">
+                              {judge
+                                ? judge[key].not_assessable
+                                  ? "NOT ASSESSABLE"
+                                  : judge[key].score + " / 2"
+                                : "NOT RUN"}
+                            </span>
+                            <p>
+                              {judge
+                                ? judge[key].rationale
+                                : "No real LLM judgement is stored for this result."}
+                            </p>
+                          </div>
+                        ))}
+                        <HumanLabel resultId={r.id} existing={r.human} />
+                      </section>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+        </>
+      )}
+      <details className="panel">
+        <summary>Trust transition history</summary>
+        <pre>
+          {JSON.stringify(
+            all("SELECT * FROM trust_history ORDER BY id DESC LIMIT 50"),
+            null,
+            2,
+          )}
+        </pre>
+      </details>
+    </>
+  );
 }
