@@ -4,23 +4,46 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { audit } from "./db";
 import { catalogue, tenant } from "./catalogue";
 import { ChannelEvent, draftSchema, normalize } from "./domain";
+import { CLI_SETTINGS, CLI_PREAMBLE, runCli, CliTrace } from "./cli-provider";
 export const PROMPT_VERSION = "officer-v1";
+export function selectedModel(judge = false) {
+  return process.env.LLM_PROVIDER === "codex_cli"
+    ? (judge ? process.env.CODEX_JUDGE_MODEL : undefined) ||
+        process.env.CODEX_MODEL ||
+        "gpt-6.1-sol"
+    : (judge ? process.env.JUDGE_MODEL : undefined) ||
+        process.env.LLM_MODEL ||
+        "gpt-5.4-mini";
+}
+export function modelConfigured() {
+  return (
+    process.env.LLM_PROVIDER === "codex_cli" || !!process.env.OPENAI_API_KEY
+  );
+}
 export async function structured<T extends z.ZodTypeAny>(
   schema: T,
   system: string,
   input: unknown,
   context: { tenant: string; event?: string; purpose: string; model?: string },
 ): Promise<z.infer<T>> {
-  const model = context.model || process.env.LLM_MODEL || "gpt-5.4-mini",
+  const provider =
+    process.env.LLM_PROVIDER === "codex_cli" ? "codex_cli" : "openai";
+  const model =
+      context.model || selectedModel(context.purpose === "quality_judge"),
     started = Date.now();
   const messages = [
-    { role: "system", content: system },
+    {
+      role: "system",
+      content: (provider === "codex_cli" ? CLI_PREAMBLE : "") + system,
+    },
     { role: "user", content: JSON.stringify(input) },
   ];
   const jsonSchema = zodToJsonSchema(schema, { $refStrategy: "none" });
   delete (jsonSchema as { $schema?: string }).$schema;
   const parameters = {
-    max_completion_tokens: 3000,
+    ...(provider === "codex_cli"
+      ? CLI_SETTINGS
+      : { max_completion_tokens: 3000 }),
     response_format: {
       type: "json_schema",
       json_schema: { name: context.purpose, strict: true, schema: jsonSchema },
@@ -34,8 +57,24 @@ export async function structured<T extends z.ZodTypeAny>(
     status = "failed",
     error: string | null = null,
     responseModel: string | null = null,
-    responseId: string | null = null;
+    responseId: string | null = null,
+    cliTrace: CliTrace | null = null;
   try {
+    if (provider === "codex_cli") {
+      const result = await runCli(model, system, input, jsonSchema);
+      cliTrace = result.trace;
+      responseId = cliTrace.thread_id;
+      responseModel = model;
+      usage = cliTrace.usage
+        ? {
+            prompt_tokens: cliTrace.usage.input_tokens,
+            completion_tokens: cliTrace.usage.output_tokens,
+          }
+        : null;
+      const parsed = schema.parse(result.content);
+      status = "ok";
+      return parsed;
+    }
     if (!process.env.OPENAI_API_KEY)
       throw Error("Model credential missing: add OPENAI_API_KEY to .env");
     const response = await fetch(
@@ -64,13 +103,15 @@ export async function structured<T extends z.ZodTypeAny>(
     status = "ok";
     return parsed;
   } catch (e) {
+    if (e && typeof e === "object" && "cliTrace" in e)
+      cliTrace = e.cliTrace as CliTrace;
     error = e instanceof Error ? e.message : "Model failure";
     throw e;
   } finally {
     const inputRate = process.env.INPUT_USD_PER_MILLION,
       outputRate = process.env.OUTPUT_USD_PER_MILLION;
     const cost =
-      usage && inputRate && outputRate
+      provider !== "codex_cli" && usage && inputRate && outputRate
         ? ((usage.prompt_tokens || 0) * Number(inputRate) +
             (usage.completion_tokens || 0) * Number(outputRate)) /
           1e6
@@ -80,10 +121,18 @@ export async function structured<T extends z.ZodTypeAny>(
       prompt_version: PROMPT_VERSION,
       prompt_hash: promptHash,
       model,
+      provider,
       response_model: responseModel,
       response_id: responseId,
       parameters,
       usage,
+      cli_trace: cliTrace,
+      cost_basis:
+        provider === "codex_cli"
+          ? "Account CLI usage; USD billing unavailable"
+          : cost === null
+            ? "Rates not configured"
+            : "Configured API rate estimate",
       cost_usd_estimate: cost,
       latency_ms: Date.now() - started,
       status,

@@ -1,9 +1,10 @@
 import { all, db, tx, audit } from "../src/lib/db";
 import { workOne, dispatchOne } from "../src/lib/workflow";
 import { setTimeout } from "node:timers/promises";
+import { modelConfigured } from "../src/lib/llm";
 let redrafted = false;
 async function main() {
-  if (!process.env.OPENAI_API_KEY)
+  if (!modelConfigured())
     throw Error(
       "No OPENAI_API_KEY. Add it to .env. Stored inbox and quality pages still work.",
     );

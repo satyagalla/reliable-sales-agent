@@ -1,5 +1,6 @@
 import { runEvaluation } from "../src/lib/quality";
-if (!process.argv.includes("--fixture") && !process.env.OPENAI_API_KEY) {
+import { modelConfigured } from "../src/lib/llm";
+if (!process.argv.includes("--fixture") && !modelConfigured()) {
   console.error(
     "Add OPENAI_API_KEY to .env before real evaluations. Use --fixture for explicit offline fixtures.",
   );
