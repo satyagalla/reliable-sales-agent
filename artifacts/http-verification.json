@@ -1,0 +1,49 @@
+{
+  "at": "2026-10-29T21:22:52.277Z",
+  "base": "http://127.0.0.1:3000",
+  "method": "HTTP assertions; no browser visual inspection",
+  "results": [
+    {
+      "route": "/",
+      "status": 200,
+      "bytes": 60662,
+      "rtl_markup": true
+    },
+    {
+      "route": "/?tenant=rimal",
+      "status": 200,
+      "bytes": 49802,
+      "rtl_markup": true
+    },
+    {
+      "route": "/quality",
+      "status": 200,
+      "bytes": 410431,
+      "rtl_markup": true
+    },
+    {
+      "route": "/audit",
+      "status": 200,
+      "bytes": 162065,
+      "rtl_markup": false
+    },
+    {
+      "check": "reject cross-origin mutation",
+      "origin": null,
+      "status": 403
+    },
+    {
+      "check": "reject cross-origin mutation",
+      "origin": "https://hostile.example",
+      "status": 403
+    },
+    {
+      "check": "reject unsigned event",
+      "status": 401
+    },
+    {
+      "check": "reject unauthorized promotion",
+      "status": 409
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+
+> trust-desk@1.0.0 test
+> tsx --test tests/*.test.ts
+
+TAP version 13
+# (node:33180) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: provider adapter makes one structured call, isolates catalogue, separates untrusted input, and audits usage
+ok 1 - provider adapter makes one structured call, isolates catalogue, separates untrusted input, and audits usage
+  ---
+  duration_ms: 217.2996
+  type: 'test'
+  ...
+# Subtest: malformed and refused model outputs fail closed and still record provenance
+ok 2 - malformed and refused model outputs fail closed and still record provenance
+  ---
+  duration_ms: 48.3883
+  type: 'test'
+  ...
+# (node:5320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: signature fails closed, expires, and binds every byte
+ok 3 - signature fails closed, expires, and binds every byte
+  ---
+  duration_ms: 7.7554
+  type: 'test'
+  ...
+# Subtest: reviewer origin accepts the actual loopback host and rejects cross-origin, null and hostile hosts
+ok 4 - reviewer origin accepts the actual loopback host and rejects cross-origin, null and hostile hosts
+  ---
+  duration_ms: 0.7679
+  type: 'test'
+  ...
+# Subtest: hand-off replies do not offer out-of-area prices or commitments
+ok 5 - hand-off replies do not offer out-of-area prices or commitments
+  ---
+  duration_ms: 3.2151
+  type: 'test'
+  ...
+# Subtest: four simultaneous processes dedupe using the database constraint
+ok 6 - four simultaneous processes dedupe using the database constraint
+  ---
+  duration_ms: 839.1722
+  type: 'test'
+  ...
+# Subtest: tenant derives from channel recipient, ignores spoofed metadata and rejects unknown recipients
+ok 7 - tenant derives from channel recipient, ignores spoofed metadata and rejects unknown recipients
+  ---
+  duration_ms: 12.5779
+  type: 'test'
+  ...
+# Subtest: minor-unit money holds for random quantities and durations; service is once, VAT half-up
+ok 8 - minor-unit money holds for random quantities and durations; service is once, VAT half-up
+  ---
+  duration_ms: 140.1601
+  type: 'test'
+  ...
+# Subtest: strict draft schema rejects invented fields, fractional and negative quantities
+ok 9 - strict draft schema rejects invented fields, fractional and negative quantities
+  ---
+  duration_ms: 5.2739
+  type: 'test'
+  ...
+# Subtest: Rimal 15% VAT, minimum, and crew area boundaries are deterministic
+ok 10 - Rimal 15% VAT, minimum, and crew area boundaries are deterministic
+  ---
+  duration_ms: 2.584
+  type: 'test'
+  ...
+# Subtest: autonomous requires all three conditions; quotes and commitments always need approval
+ok 11 - autonomous requires all three conditions; quotes and commitments always need approval
+  ---
+  duration_ms: 2.0499
+  type: 'test'
+  ...
+# Subtest: Arabic/Persian digits normalize and outbound totals stay in RTL-friendly Arabic
+ok 12 - Arabic/Persian digits normalize and outbound totals stay in RTL-friendly Arabic
+  ---
+  duration_ms: 55.3482
+  type: 'test'
+  ...
+# Subtest: superseded worker result cannot create a draft or be approved
+ok 13 - superseded worker result cannot create a draft or be approved
+  ---
+  duration_ms: 20.9571
+  type: 'test'
+  ...
+# Subtest: concurrent approvals commit one decision and exactly one outbox record
+ok 14 - concurrent approvals commit one decision and exactly one outbox record
+  ---
+  duration_ms: 701.6082
+  type: 'test'
+  ...
+# Subtest: uncertain outbound delivery never retries after a transport error
+ok 15 - uncertain outbound delivery never retries after a transport error
+  ---
+  duration_ms: 5.4475
+  type: 'test'
+  ...
+# Subtest: new customer message cancels pending outbound before dispatch
+ok 16 - new customer message cancels pending outbound before dispatch
+  ---
+  duration_ms: 15.6693
+  type: 'test'
+  ...
+# Subtest: approval audit failure rolls back both the decision and outbox
+ok 17 - approval audit failure rolls back both the decision and outbox
+  ---
+  duration_ms: 11.4664
+  type: 'test'
+  ...
+# Subtest: simultaneous dispatchers make one transport attempt
+ok 18 - simultaneous dispatchers make one transport attempt
+  ---
+  duration_ms: 29.6663
+  type: 'test'
+  ...
+# Subtest: expired lease becomes dead letter after bounded attempts
+ok 19 - expired lease becomes dead letter after bounded attempts
+  ---
+  duration_ms: 6.1381
+  type: 'test'
+  ...
+# Subtest: trust cannot promote without live evidence; calibration excludes not assessable dimensions
+ok 20 - trust cannot promote without live evidence; calibration excludes not assessable dimensions
+  ---
+  duration_ms: 5.7011
+  type: 'test'
+  ...
+# Subtest: 36 versioned baseline cases pass; deliberately degraded run is rejected
+ok 21 - 36 versioned baseline cases pass; deliberately degraded run is rejected
+  ---
+  duration_ms: 201.5096
+  type: 'test'
+  ...
+# Subtest: judge score drops are regression failures even when hard checks still pass
+ok 22 - judge score drops are regression failures even when hard checks still pass
+  ---
+  duration_ms: 0.4805
+  type: 'test'
+  ...
+# Subtest: human-only promotion uses per-tenant evidence; a zero human score automatically demotes
+ok 23 - human-only promotion uses per-tenant evidence; a zero human score automatically demotes
+  ---
+  duration_ms: 21.2302
+  type: 'test'
+  ...
+# Subtest: saving an unsafe human label and demoting trust are one atomic operation
+ok 24 - saving an unsafe human label and demoting trust are one atomic operation
+  ---
+  duration_ms: 9.599
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3192.3453
