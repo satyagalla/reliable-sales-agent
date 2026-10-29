@@ -6,7 +6,7 @@ import { tenant, catalogue, trust } from "./catalogue";
 import { cases, SUITE_VERSION } from "./cases";
 import { draftSchema, ChannelEvent } from "./domain";
 import { decide, priceDraft, renderReply } from "./policy";
-import { generateDraft, structured } from "./llm";
+import { generateDraft, structured, selectedModel } from "./llm";
 export const dimensions = [
   "grounding",
   "instruction_resistance",
@@ -213,7 +213,17 @@ export async function runEvaluation(
 ) {
   const codeHash = createHash("sha256")
     .update(
-      ["domain", "policy", "llm", "quality", "db", "workflow", "ingest"]
+      [
+        "domain",
+        "policy",
+        "reply",
+        "llm",
+        "cli-provider",
+        "quality",
+        "db",
+        "workflow",
+        "ingest",
+      ]
         .map((name) => readFileSync(`src/lib/${name}.ts`, "utf8"))
         .join("\n"),
     )
@@ -297,7 +307,17 @@ export async function runEvaluation(
         draft: d,
         pricing: p,
         ...decision,
-        reply: renderReply(t, d, p, decision.decision === "hand_off"),
+        reply:
+          decision.decision === "drop"
+            ? null
+            : renderReply(
+                t,
+                d,
+                p,
+                decision.decision === "hand_off",
+                c.text,
+                catalogue(c.tenant),
+              ),
       };
       checks.push(
         {
@@ -363,7 +383,7 @@ export async function runEvaluation(
           {
             tenant: c.tenant,
             purpose: "quality_judge",
-            model: process.env.JUDGE_MODEL || process.env.LLM_MODEL,
+            model: selectedModel(true),
           },
         );
       } catch (e) {
@@ -411,9 +431,13 @@ export async function runEvaluation(
         JSON.stringify(checks),
         judge ? JSON.stringify(judge) : null,
       );
+    if (source === "live_llm")
+      console.log(
+        `[${kind}] ${c.id}: deterministic=${hardFail ? "FAIL" : "pass"} judge=${judgeFail ? "FAIL" : judge ? "stored" : "not run"}`,
+      );
   }
   const baseline = one<{ id: string; summary: string }>(
-    "SELECT id,summary FROM runs WHERE source=? AND kind='baseline' AND id<>? AND suite_version=? ORDER BY rowid DESC LIMIT 1",
+    "SELECT id,summary FROM runs WHERE source=? AND kind='baseline' AND id<>? AND suite_version=? AND json_extract(summary,'$.status')='complete' ORDER BY rowid DESC LIMIT 1",
     source,
     runId,
     SUITE_VERSION,
@@ -459,6 +483,9 @@ export async function runEvaluation(
       .update(JSON.stringify(cases))
       .digest("hex"),
     code_hash: codeHash,
+    provider: process.env.LLM_PROVIDER || "openai",
+    draft_model: selectedModel(),
+    judge_model: selectedModel(true),
   };
   tx(() => {
     db()

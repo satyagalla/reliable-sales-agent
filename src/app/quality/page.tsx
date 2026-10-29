@@ -46,6 +46,25 @@ export default async function Quality({
       : [],
     cal = calibration(results),
     summary = run ? JSON.parse(run.summary) : null;
+  if (summary?.status === "running") {
+    summary.total = results.length;
+    summary.failed = results.filter((r) =>
+      JSON.parse(r.checks).some((c: { pass: boolean }) => !c.pass),
+    ).length;
+    summary.judge_failures = results.filter(
+      (r) =>
+        !r.judge || dimensions.some((k) => JSON.parse(r.judge!)[k].score === 0),
+    ).length;
+    summary.not_assessable = results.reduce(
+      (n, r) =>
+        n +
+        (r.judge
+          ? dimensions.filter((k) => JSON.parse(r.judge!)[k].score === null)
+              .length
+          : 0),
+      0,
+    );
+  }
   return (
     <>
       <header>
@@ -248,7 +267,9 @@ export default async function Quality({
                           className="reply"
                           dir={input.language === "ar" ? "rtl" : "ltr"}
                         >
-                          {output.reply || output.error}
+                          {output.decision === "drop"
+                            ? "No outbound reply. Message dropped."
+                            : output.reply || output.error}
                         </pre>
                         <details>
                           <summary>

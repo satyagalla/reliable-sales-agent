@@ -105,6 +105,14 @@ export async function structured<T extends z.ZodTypeAny>(
   } catch (e) {
     if (e && typeof e === "object" && "cliTrace" in e)
       cliTrace = e.cliTrace as CliTrace;
+    if (cliTrace) {
+      responseId = cliTrace.thread_id;
+      if (cliTrace.usage)
+        usage = {
+          prompt_tokens: cliTrace.usage.input_tokens,
+          completion_tokens: cliTrace.usage.output_tokens,
+        };
+    }
     error = e instanceof Error ? e.message : "Model failure";
     throw e;
   } finally {

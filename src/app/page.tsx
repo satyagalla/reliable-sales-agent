@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { all, one } from "@/lib/db";
-import { tenant as getTenant } from "@/lib/catalogue";
+import { tenant as getTenant, catalogue } from "@/lib/catalogue";
 import { Draft, money } from "@/lib/domain";
 import { Pricing, renderReply } from "@/lib/policy";
 import { ActionButton, ReviewControls } from "./components";
@@ -212,7 +212,16 @@ export default async function Inbox({
                   lang={d.language}
                   className="reply"
                 >
-                  {renderReply(t, d, p, row.decision === "hand_off")}
+                  {row.decision === "drop"
+                    ? "No outbound reply. Message dropped."
+                    : renderReply(
+                        t,
+                        d,
+                        p,
+                        row.decision === "hand_off",
+                        e.text,
+                        catalogue(tenantId),
+                      )}
                 </pre>
                 <details>
                   <summary>Model draft & pricing evidence</summary>
@@ -253,7 +262,14 @@ export default async function Inbox({
                     draftId={row.id}
                     version={row.version}
                     approvers={t.approvers}
-                    reply={renderReply(t, d, p, row.decision === "hand_off")}
+                    reply={renderReply(
+                      t,
+                      d,
+                      p,
+                      row.decision === "hand_off",
+                      e.text,
+                      catalogue(tenantId),
+                    )}
                     rtl={rtl}
                   />
                 )}

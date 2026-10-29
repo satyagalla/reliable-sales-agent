@@ -103,7 +103,18 @@ export function persistDraft(
       source,
     });
     if (result.decision === "auto_send")
-      enqueue(draftId, t.id, renderReply(t, d, pricing));
+      enqueue(
+        draftId,
+        t.id,
+        renderReply(
+          t,
+          d,
+          pricing,
+          false,
+          JSON.parse(event.payload).text,
+          catalogue(t.id),
+        ),
+      );
     return draftId;
   });
 }
@@ -203,6 +214,8 @@ export function review(input: {
         d,
         JSON.parse(row.pricing),
         row.status === "hand_off",
+        JSON.parse(e.payload).text,
+        catalogue(t.id),
       );
     if (
       input.action === "edit" &&

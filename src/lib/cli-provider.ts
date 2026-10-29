@@ -183,6 +183,7 @@ export async function runCli(
       stderr = "",
       failure: Error | null = null;
     const stop = (error: Error) => {
+      clearTimeout(timer);
       failure = error;
       child.kill();
       child.stdout.destroy();
@@ -243,5 +244,9 @@ export async function runCli(
   }).catch((error) => {
     throw Object.assign(error, { cliTrace: trace });
   });
-  return { content: JSON.parse(readFileSync(output, "utf8")), trace };
+  try {
+    return { content: JSON.parse(readFileSync(output, "utf8")), trace };
+  } catch (error) {
+    throw Object.assign(error as Error, { cliTrace: trace });
+  }
 }

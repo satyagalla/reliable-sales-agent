@@ -2,7 +2,7 @@ import { runEvaluation } from "../src/lib/quality";
 import { modelConfigured } from "../src/lib/llm";
 if (!process.argv.includes("--fixture") && !modelConfigured()) {
   console.error(
-    "Add OPENAI_API_KEY to .env before real evaluations. Use --fixture for explicit offline fixtures.",
+    "Configure an authenticated codex_cli provider or OPENAI_API_KEY in .env before real evaluations. Use --fixture for explicit offline fixtures.",
   );
   process.exitCode = 1;
 } else

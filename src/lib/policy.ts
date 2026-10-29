@@ -103,8 +103,6 @@ export function decide(
 ): { decision: Decision; reasons: string[] } {
   const text = normalize(customerText).toLowerCase(),
     city = normalize(d.city).trim().toLowerCase();
-  if (d.intent === "spam")
-    return { decision: "drop", reasons: ["Spam classified; never dispatched"] };
   if (
     /system override|ignore.*instructions|admin mode|print.*instructions|تجاهل.*تعليمات/.test(
       text,
@@ -114,6 +112,8 @@ export function decide(
       decision: "hand_off",
       reasons: ["Prompt injection marker in untrusted input"],
     };
+  if (d.intent === "spam")
+    return { decision: "drop", reasons: ["Spam classified; never dispatched"] };
   if (d.intent === "support" || d.intent === "unknown" || d.risk === "high")
     return {
       decision: "hand_off",
@@ -179,63 +179,4 @@ export function decide(
       : ["Low-risk FAQ, tenant opted in, autonomous trust"],
   };
 }
-// Outbound copy is assembled from approved facts, never model-authored promises or amounts.
-export function renderReply(
-  t: Tenant,
-  d: Draft,
-  p: Pricing,
-  handoff = false,
-): string {
-  const ar = d.language === "ar";
-  if (handoff)
-    return ar
-      ? "شكرًا لتواصلكم. يتطلب طلبكم مراجعة بشرية. سيقوم فريقنا بمراجعة نطاق الخدمة والمتطلبات قبل تقديم عرض أو تأكيد أي التزام."
-      : "Thank you for contacting us. Your request requires human review. Our team will check the service area and requirements before providing a quote or confirming any commitment.";
-  if (d.intent === "faq" && !p.lines.length) {
-    const arabic =
-      t.id === "qamar"
-        ? [
-            "الأسعار تشمل تغطية الضرر العرضي ولا تشمل السرقة.",
-            "يلزم تقديم نسخة من الرخصة التجارية قبل التسليم.",
-            "الحد الأدنى للإيجار شهر واحد. الإيجار لأكثر من 12 شهرًا يحتاج مراجعة المدير العام.",
-            "رسوم التوصيل والتركيب تفرض مرة واحدة لكل طلب.",
-          ]
-        : [
-            "الأسعار لكل يوم فعالية.",
-            "يلزم طاقم تركيب للمسارح الأكبر من 12 مترًا مربعًا والشاشات الأكبر من 6 أمتار مربعة وجميع الخيام.",
-            "دفعة مقدمة 30% تؤكد الحجز. مدير العمليات وحده يؤكد التوفر.",
-            "الحد الأدنى للطلب 2,000 ريال قبل الضريبة.",
-          ];
-    return (ar ? arabic : t.faq).join("\n");
-  }
-  if (!p.lines.length)
-    return ar
-      ? "شكرًا لتواصلكم. تمت إحالة طلبكم إلى فريقنا للمراجعة. لم يتم تأكيد أي حجز أو تسليم."
-      : "Thank you for contacting us. Your request has been referred to our team for review. No booking or delivery has been confirmed.";
-  const items = p.lines
-    .map(
-      (l) =>
-        `${l.row_id} × ${l.quantity} × ${l.periods}: ${money(l.total, t.currency, d.language)}`,
-    )
-    .join("\n");
-  return [
-    ar
-      ? "عرض سعر مبدئي، رهن التحقق من المتطلبات والتوفر."
-      : "Indicative quote, subject to verification of requirements and availability.",
-    items,
-    `${ar ? "المجموع قبل الخصم" : "Subtotal"}: ${money(p.subtotal, t.currency, d.language)}`,
-    `${ar ? "الخصم" : "Discount"}: ${money(p.discount, t.currency, d.language)}`,
-    `${ar ? "ضريبة القيمة المضافة" : "VAT"} (${t.vat_rate * 100}%): ${money(p.vat, t.currency, d.language)}`,
-    `${ar ? "الإجمالي" : "Total"}: ${money(p.total, t.currency, d.language)}`,
-    d.missing.length
-      ? ar
-        ? "يرجى توضيح المعلومات الناقصة مع الفريق قبل تأكيد العرض."
-        : "Please clarify with our team: " + d.missing.join("; ")
-      : null,
-    ar
-      ? "هذا العرض لا يؤكد الحجز أو التسليم."
-      : "This quote does not confirm booking or delivery.",
-  ]
-    .filter(Boolean)
-    .join("\n");
-}
+export { renderReply } from "./reply";
