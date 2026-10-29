@@ -18,6 +18,7 @@
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",
     "verify:http": "tsx scripts/verify-http.ts",
+    "verify:offline": "node scripts/verify-offline.mjs",
     "format": "prettier --write src scripts tests *.json *.md --ignore-unknown",
     "format:check": "prettier --check src scripts tests *.json *.md --ignore-unknown"
   },

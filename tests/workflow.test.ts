@@ -218,6 +218,24 @@ test("outbound replies answer the relevant FAQ and retain useful catalogue units
   );
   assert.match(faq, /Theft is not covered/);
   assert.ok(!faq.includes("trade licence"));
+  const rimal = tenant("rimal"),
+    eventDraft = structuredClone(d);
+  eventDraft.intent = "quote";
+  eventDraft.language = "en";
+  eventDraft.lines = [
+    { row_id: "R-GEN-001", quantity: 1, periods: 2, mode: "rent" },
+  ];
+  eventDraft.missing = [];
+  const eventReply = renderReply(
+    rimal,
+    eventDraft,
+    priceDraft(rimal, catalogue("rimal"), eventDraft),
+    false,
+    "Rent generator for 2 days Riyadh",
+    catalogue("rimal"),
+  );
+  assert.match(eventReply, /event date.*site address/i);
+  assert.match(eventReply, /100 kVA.*power requirements/i);
 });
 test("four simultaneous processes dedupe using the database constraint", async () => {
   const e = event();

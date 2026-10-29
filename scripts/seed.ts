@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { db, tx, audit } from "../src/lib/db";
+import { db, tx, audit, one } from "../src/lib/db";
 import { ingest } from "../src/lib/ingest";
 import { persistDraft } from "../src/lib/workflow";
 import { fixture } from "../src/lib/fixtures";
@@ -36,6 +36,31 @@ async function main() {
     .trim()
     .split(/\r?\n/)
     .map((s) => JSON.parse(s) as ChannelEvent);
+  if (
+    events.every((e) => {
+      const t = tenants.find((t) =>
+        t.channels.some(
+          (c) =>
+            c.channel === e.channel &&
+            c.address.toLowerCase() === e.to.toLowerCase(),
+        ),
+      );
+      return (
+        t &&
+        one(
+          "SELECT id FROM events WHERE tenant=? AND channel=? AND message_id=?",
+          t.id,
+          e.channel,
+          e.message_id,
+        )
+      );
+    })
+  ) {
+    console.log(
+      "Seed events already present. Preserved recorded decisions, runs, labels, audit and trust without replay.",
+    );
+    return;
+  }
   for (const e of events) {
     const result = ingest(e, "seed_cli");
     if (!result.duplicate && !process.argv.includes("--live")) {

@@ -28,7 +28,7 @@ function clarification(value: string, ar: boolean) {
       "What discount percentage are you requesting? Any discount requires review and approval.",
       "ما نسبة الخصم المطلوبة؟ يحتاج أي خصم إلى مراجعة وموافقة.",
     );
-  if (/date|موعد|تاريخ/.test(text))
+  if (/date|موعد|تاريخ|تواريخ/.test(text))
     return choose(
       "Please confirm the requested date; availability and delivery are not confirmed.",
       "يرجى تأكيد التاريخ المطلوب؛ لم يتم تأكيد التوفر أو التسليم.",
@@ -52,6 +52,11 @@ function clarification(value: string, ar: boolean) {
     return choose(
       "Please select the required model from the catalogue.",
       "يرجى تحديد الطراز المطلوب من الكتالوج.",
+    );
+  if (/quantity|quantities|equipment|items|كمية|كميات|معدات|أصناف/.test(text))
+    return choose(
+      "Which catalogue equipment and quantities are required?",
+      "ما المعدات والكميات المطلوبة من الكتالوج؟",
     );
   return choose(
     "Please clarify the remaining requirements with our team before approving the quote.",
@@ -77,10 +82,15 @@ export function renderReply(
         text,
       )
     )
-      return choose(
-        "I cannot act on instruction overrides, disclose internal instructions, or confirm an unauthorized discount or delivery. For a business enquiry, please provide the item, quantity, rental duration or purchase preference, and delivery city.",
-        "لا يمكنني تنفيذ أوامر تجاوز التعليمات أو كشف التعليمات الداخلية أو تأكيد خصم أو تسليم غير معتمد. لطلب تجاري، يرجى تحديد الصنف والكمية ومدة الإيجار أو الرغبة في الشراء ومدينة التوصيل.",
-      );
+      return t.id === "rimal"
+        ? choose(
+            "I cannot confirm an unauthorized free booking. Please provide the event equipment, quantities, event date, number of days and Riyadh location so the team can review your request. Only the operations manager confirms availability; a booking requires a 30% deposit after that check.",
+            "لا يمكنني تأكيد حجز مجاني غير معتمد. يرجى تحديد معدات الفعالية والكميات وتاريخ الفعالية وعدد الأيام والموقع في الرياض لمراجعة الطلب. مدير العمليات وحده يؤكد التوفر، ويتطلب الحجز دفعة مقدمة 30% بعد التحقق.",
+          )
+        : choose(
+            "I cannot act on instruction overrides, disclose internal instructions, or confirm an unauthorized discount or delivery. For a business enquiry, please provide the item, quantity, rental duration or purchase preference, and delivery city.",
+            "لا يمكنني تنفيذ أوامر تجاوز التعليمات أو كشف التعليمات الداخلية أو تأكيد خصم أو تسليم غير معتمد. لطلب تجاري، يرجى تحديد الصنف والكمية ومدة الإيجار أو الرغبة في الشراء ومدينة التوصيل.",
+          );
     if (d.intent === "support") {
       const contract = customerText.match(/\bQD-\d+\b/i)?.[0];
       return choose(
@@ -95,16 +105,16 @@ export function renderReply(
       );
     if (/macbook/.test(text) && t.id === "rimal")
       return choose(
-        "MacBook rentals are not listed in Rimal’s catalogue; we supply event equipment. Another business’s AED price cannot be applied as a SAR catalogue price. A team member must review any referral or alternative.",
-        "تأجير ماك بوك غير مدرج في كتالوج رمال؛ نشاطنا معدات الفعاليات. لا يمكن اعتماد سعر منشأة أخرى بالدرهم كسعر في كتالوجنا بالريال. يلزم مراجعة الفريق لأي إحالة أو بديل.",
+        "MacBook rentals are not listed in Rimal’s catalogue; we supply event equipment. Are you asking for a currency conversion or a rental price match? We cannot quote a MacBook rental or treat an AED amount as our SAR catalogue price.",
+        "تأجير ماك بوك غير مدرج في كتالوج رمال؛ نشاطنا معدات الفعاليات. هل المطلوب تحويل عملة أم مطابقة سعر إيجار؟ لا يمكننا تقديم عرض إيجار ماك بوك أو اعتبار مبلغ بالدرهم سعراً من كتالوجنا بالريال.",
       );
     if (
       p.lines.length &&
       p.net < Math.round((t.policy.minimum_order_before_vat || 0) * 100)
     )
       return choose(
-        `Our minimum order is ${money(Math.round(t.policy.minimum_order_before_vat! * 100), t.currency)} before VAT. The requested items total ${money(p.net, t.currency)} before VAT, which is below the minimum. Please increase or revise the equipment requirements; a team member must review the revised request.`,
-        `الحد الأدنى للطلب ${money(Math.round(t.policy.minimum_order_before_vat! * 100), t.currency, "ar")} قبل الضريبة. مجموع الأصناف المطلوبة ${money(p.net, t.currency, "ar")} قبل الضريبة، وهو أقل من الحد الأدنى. يرجى زيادة المتطلبات أو تعديلها لمراجعتها مع الفريق.`,
+        `Our minimum order is ${money(Math.round(t.policy.minimum_order_before_vat! * 100), t.currency)} before VAT. The requested items total ${money(p.net, t.currency)} before VAT, which is below the minimum. Would you like to increase quantities or add other catalogue equipment to meet the minimum? Please also confirm the event date and site address for the team's availability review.`,
+        `الحد الأدنى للطلب ${money(Math.round(t.policy.minimum_order_before_vat! * 100), t.currency, "ar")} قبل الضريبة. مجموع الأصناف المطلوبة ${money(p.net, t.currency, "ar")} قبل الضريبة، وهو أقل من الحد الأدنى. هل ترغبون في زيادة الكميات أو إضافة معدات أخرى من الكتالوج لبلوغ الحد الأدنى؟ يرجى أيضاً تأكيد تاريخ الفعالية وعنوان الموقع لمراجعة التوفر مع الفريق.`,
       );
     if (
       t.id === "qamar" &&
@@ -164,6 +174,11 @@ export function renderReply(
     const facts = ar ? arabicFaq[t.id] : t.faq;
     return index === undefined ? facts.join("\n") : facts[index];
   }
+  if (!p.lines.length && t.id === "rimal")
+    return choose(
+      "Only the operations manager can confirm availability; this is not a booking confirmation. Please provide the catalogue equipment and quantities, exact event date, number of event days and Riyadh site address. A 30% deposit confirms a booking after availability is verified.",
+      "مدير العمليات وحده يؤكد التوفر؛ هذه الرسالة لا تؤكد الحجز. يرجى تحديد المعدات والكميات من الكتالوج، والتاريخ الدقيق للفعالية، وعدد أيامها، وعنوان الموقع في الرياض. دفعة مقدمة 30% تؤكد الحجز بعد التحقق من التوفر.",
+    );
   if (!p.lines.length)
     return [
       choose(
@@ -212,8 +227,14 @@ export function renderReply(
       : null,
     t.id === "rimal"
       ? choose(
-          "Only the operations manager confirms availability. A 30% deposit confirms a booking after availability is verified.",
-          "مدير العمليات وحده يؤكد التوفر. دفعة مقدمة 30% تؤكد الحجز بعد التحقق من التوفر.",
+          "Please confirm the exact event date(s) and site address for availability review. Only the operations manager confirms availability. A 30% deposit confirms a booking after availability is verified.",
+          "يرجى تأكيد التاريخ الدقيق للفعالية وعنوان الموقع لمراجعة التوفر. مدير العمليات وحده يؤكد التوفر. دفعة مقدمة 30% تؤكد الحجز بعد التحقق من التوفر.",
+        )
+      : null,
+    t.id === "rimal" && d.lines.some((l) => l.row_id === "R-GEN-001")
+      ? choose(
+          "Does the listed 100 kVA generator meet your power requirements?",
+          "هل مولد 100 كيلوفولت أمبير المدرج يلبي احتياجات الطاقة المطلوبة؟",
         )
       : null,
     choose(
