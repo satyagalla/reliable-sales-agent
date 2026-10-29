@@ -22,10 +22,32 @@ HTTP requests to both inboxes/quality/audit returned 200 without a key and inclu
 
 Generated `AGENTS.md` and relevant installed Next.js guides were read. Official OpenAI Structured Outputs documentation was checked. No external messaging, deployment, fake Loom or fabricated personal review occurred.
 
-## Personal completion record
+## Earlier verification checkpoint
 
 Final automated verification on 2026-10-29: **24 tests passed**, including the synthetic provider adapter, audit-failure rollback, simultaneous dispatch and atomic label/demotion tests. TypeScript and production build passed. **Eight HTTP checks passed** after correcting a loopback Origin/Host mismatch found by HTTP verification. The current fixture baseline passes all 36 cases; the degraded run fails all 36 and blocks its gate. Test/HTTP evidence and source-labelled stored runs are exported under `artifacts/`. Zero genuine provider calls and zero personal labels were present at this verification point.
 
 The initial model default was changed to `gpt-5.4-mini` after checking current official model documentation; its adapter uses the current completion-token parameter without an unsupported temperature setting. Account access and real execution remain unverified until credentials are supplied.
 
 Update after personal review/recording: run ID, number labelled, agreement, disagreements/exclusions, model and usage/cost availability, manual browser checks and Loom URL. These remain pending until actually done.
+
+## Genuine local inference, 2026-10-29
+
+At the developer's request, added and exercised an authenticated Codex CLI adapter (installed version 0.164.0, configured model `gpt-6.1-sol`, low reasoning effort). Each invocation is ephemeral, read-only, schema-constrained and limited to one inference turn, with execution, browsing, apps and subordinate agents disabled. No implementation was delegated through it. Existing authentication was reused without reading or exporting credentials. Successful traces contain zero tool calls. Tokens and latency are actual provider measurements; subscription dollar billing is unavailable and remains null.
+
+Two initial CLI startup attempts failed while disabling an internal host feature; the adapter was corrected and the failures remain in audit. The first parser classified an error item as tool activity; that old failed-attempt trace is retained, while the corrected parser distinguishes inference errors. A real Arabic purchase smoke test then succeeded. The worker produced eleven current live drafts: five awaiting approval, five handoffs and one drop.
+
+The first 36-case live baseline (`b2ba87ec`) passed 35 deterministic cases but failed the helpfulness means. Case q08 exposed spam classification taking priority over an instruction-injection marker. The stored failure prompted a policy ordering correction and a regression test. Replies also lacked useful item/unit/clarification information. Deterministic rendering now includes catalogue names, quantities, billing basis, calculated totals, source-specific FAQ facts and relevant handoff guidance. Neither the judge rubric nor passing thresholds were relaxed. A corrected live baseline is recorded separately.
+
+The deliberately degraded live run (`b2f47252`) failed all 36 hard-check cases and all three judge dimensions for every output. Its regression gate correctly blocked. The run is intentionally corrupted after real extraction; it is not represented as natural model degradation. Genuine draft and judge calls, rationales, failed attempts and prior fixture histories are preserved in exported records.
+
+After these corrections, 31 tests and TypeScript passed. Tests include synthetic subprocess/provider failures, isolated snapshot restore, source-injection priority, tenant discount thresholds and minimum-order boundaries. Snapshot restore keeps genuine provenance, disables pending deliveries/jobs and starts supervised. Final build/HTTP and corrected-run results are recorded below when complete. Personal labels are still supplied only by the developer; no personal assessment or Loom has been fabricated.
+
+The second live baseline (`b03498b5`) passed 36/36 hard checks with no zero judge scores or not-assessable dimensions. Qamar passed its gate; Rimal's helpfulness mean was 1.444/2 and remained blocked against the unchanged 1.5 threshold. The saved rationales identified omitted event-date/site questions, vague missing-field questions and an irrelevant purchase option for Rimal. Rendering was corrected to ask useful event-specific questions, retain the operations-manager/deposit rule and clarify currency-conversion versus price-match requests. Another full live run is stored separately. No failing run was deleted or relabelled.
+
+Fresh-database verification initially caught repeated seeding adding duplicate audit records and fixture runs. A complete existing seed now returns without replay; the subsequent measured offline check restored 12 events, 23 drafts and 11 runs, with zero new model calls, zero active jobs/deliveries and supervised trust, then confirmed the second seed left evidence unchanged. The final snapshot check is rerun after the final export.
+
+## Final live verification
+
+Baseline `64a3bad9-291a-4df9-b6db-118278b8b634` passed all 36 deterministic cases and both tenant quality/regression gates. Qamar means: grounding 1.889, instruction resistance 1.944, language/helpfulness 1.722. Rimal: 2.000, 2.000, 1.944. No zero judge scores or not-assessable dimensions occurred. The same rubric, 1.5 means and 0.1 regression tolerance were retained. The failed baseline runs and deliberately degraded run remain stored.
+
+The final 31-test suite, production build and eight HTTP assertions passed after the last reply/seed changes. Total observed genuine inference attempts: 302, including two startup failures and 300 successful draft/judge calls. Successful traces report zero tool calls; reported input/output tokens total 2,137,189. Actual dollar cost is unavailable. The final export and offline restore report are under `artifacts/`. Human calibration, interactive visual review, original handler line references and a personally recorded Loom remain incomplete unless the developer completes them afterward.

@@ -12,7 +12,7 @@ npm run seed
 npm run dev
 ```
 
-Open **http://127.0.0.1:3000**. Inbox, quality and audit work from stored data without an API key. Seeding is repeatable and preserves decisions, labels and trust.
+Open **http://127.0.0.1:3000**. A fresh seed restores the committed, recorded inbox, model runs and audit without an API key or CLI login. Restore starts supervised and cancels pending deliveries; it never replays model calls. Seeding an existing database preserves decisions, labels and trust. Without the snapshot, seed creates explicitly labelled fixtures.
 
 This development machine has global Node 16 and an ignored, checksum-verified Node 22 runtime in `.tools/`. Use the wrapper below; replace `ci` with `run seed`, `run dev`, `test`, etc. On another machine install Node 22.13+ first. `npm.cmd` avoids PowerShell's npm.ps1 restriction.
 
@@ -23,16 +23,27 @@ powershell -ExecutionPolicy Bypass -File scripts/run.ps1 ci
 ## Evidence and completion status
 
 - The supplied `Seed Kit/` is preserved. Thirteen events enter durable ingestion, including duplicate delivery, correction and spoofed tenant metadata.
-- Default extractions have explicit **FIXTURE** badges. Their money/policy/approval/outbox operations execute real code; they are not genuine model outputs.
-- Thirty-six versioned cases execute deterministic expectations. Stored fixture baseline and deliberately degraded runs are visible offline and exported under `artifacts/`. Foreign rows deliberately injected into the degraded run are rejected.
-- Genuine draft/judge adapters are implemented. **Provider execution is pending until credentials are supplied.** Empty `artifacts/model-calls.json` means zero stored real calls.
+- The recorded seed inbox contains eleven current **REAL LLM** drafts; older fixture drafts remain superseded. Explicit **FIXTURE** badges distinguish authored extractions from genuine model outputs.
+- Thirty-six versioned cases execute deterministic expectations. Both fixture and genuine CLI baseline/degraded runs are stored and exported under `artifacts/`. The first live baseline passed 35/36 hard checks but failed the helpfulness gate. Its evidence is preserved. The live degraded run failed 36/36 deterministic cases and all three judge dimensions for every case, correctly blocking the gate.
+- Genuine draft/judge adapters support OpenAI HTTP and an authenticated local Codex CLI. The CLI smoke test produced a real Arabic purchase draft with recorded usage and zero tool calls. Stored model-attempt records distinguish successful inference from startup failures; final baseline/degraded evidence is exported under `artifacts/`.
+- **Final live baseline `64a3bad9`: 36/36 deterministic cases pass; both tenant quality/regression gates pass.** Qamar's grounding/instruction/helpfulness means are 1.89/1.94/1.72; Rimal's are 2.00/2.00/1.94, out of 2. There are no zero scores or not-assessable dimensions. The unchanged threshold is 1.5. Earlier failed runs remain available. Across testing, 300 successful calls and two failed startup attempts are recorded; every successful CLI trace reports zero tool calls. Dollar cost is unknown.
 - **Personal calibration is pending:** personally assess at least ten live outputs in `/quality`, preferably five per tenant. Labels are never auto-filled. Exact dimension agreement excludes not-assessable ratings.
 - The original handler source is missing. `REVIEW.md` reviews the supplied defect list without inventing original line numbers.
 - Browser discovery found no connection. HTTP verification does not claim visual verification. Record the Loom personally using `LOOM-SCRIPT.md`.
 
 ## Genuine drafts and judge runs
 
-Copy `.env.example` to `.env`; add `OPENAI_API_KEY` locally. Never commit it. Default model: `gpt-5.4-mini`, with its documented default reasoning effort and a 3,000-token completion cap. The base URL and draft/judge models are configurable for a provider supporting strict OpenAI-compatible JSON schema; other providers are not claimed as verified. Request shape follows [official Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat) and the [model documentation](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
+For the tested local CLI path, install/sign in to Codex CLI (`codex login`) and place these non-secret settings in `.env`. The development machine already has CLI 0.164.0 signed in. `CODEX_MODEL` should name a model available to your account; the tested configured model is `gpt-6.1-sol`.
+
+```dotenv
+LLM_PROVIDER=codex_cli
+CODEX_MODEL=gpt-6.1-sol
+CODEX_JUDGE_MODEL=gpt-6.1-sol
+```
+
+Run `npm run smoke:model` for one Arabic draft and `npm run status` for stored progress. The adapter uses an isolated temporary directory, a replacement inference-only instruction file, strict output schema, read-only/ephemeral sessions, and disabled execution/apps/browsing/sub-agent features. It rejects tool events or extra turns. Existing CLI authentication is reused without reading or copying credentials. CLI calls have a 75-second timeout; reported token usage is retained and dollar cost stays unknown. This is a local testing adapter, not a production subscription-auth integration. See [official non-interactive CLI documentation](https://learn.chatgpt.com/docs/non-interactive-mode).
+
+For the HTTP alternative, copy `.env.example` to `.env`, leave `LLM_PROVIDER=openai`, and add `OPENAI_API_KEY` locally. Never commit it. Default HTTP model: `gpt-5.4-mini`, with its documented default reasoning effort and a 3,000-token completion cap. Request shape follows [official Structured Outputs documentation](https://developers.openai.com/api/docs/guides/structured-outputs?api-mode=chat) and the [model documentation](https://developers.openai.com/api/docs/models/gpt-5.4-mini). HTTP account access remains unverified; other compatible providers are configurable but not tested.
 
 ```sh
 npm run worker -- --redraft
@@ -41,7 +52,7 @@ npm run eval -- --degraded
 npm run export
 ```
 
-`--redraft` supersedes reviewable fixture extractions and calls the genuine provider, preserving approved/rejected history. Alternatively, set `TRUST_DESK_DB` to a new file, seed with `--live`, then run the worker. `worker -- --watch` polls retries. Each attempt makes one draft call, with 45-second timeout, 90-second token lease, and at most three attempts; there is no model repair loop.
+`--redraft` supersedes reviewable fixture extractions and calls the genuine provider, preserving approved/rejected history. Alternatively, set `TRUST_DESK_DB` to a new file, seed with `--live`, then run the worker. `worker -- --watch` polls retries. Each attempt makes one draft call, with a 45-second HTTP or 75-second CLI timeout, 90-second token lease, and at most three attempts; there is no model repair loop.
 
 Run baseline before deliberately degraded. Preserve failed evidence. A failed latest live run blocks promotion until a clean passing run. Export again after personal labels. Add verified per-million-token rates to `.env` for USD estimates; unknown rates produce `null`, not fabricated zero cost. Usage comes from the provider.
 
@@ -68,11 +79,12 @@ npm test
 npm run typecheck
 npm run build
 npm run verify:http
+npm run verify:offline
 npm run export
 ```
 
-Run HTTP checks while the app runs. Tests use isolated temporary databases and a synthetic provider server, not genuine LLM runs. They cover cross-process dedupe/approval, 500 random money examples, boundaries, malformed output, supersession, uncertain dispatch, recovery, trust and calibration.
+Run HTTP checks while the app runs. The offline check seeds a fresh temporary database twice with model credentials disabled, confirms saved evidence is retained, and checks that no model calls, jobs or deliveries replay. Tests use isolated temporary databases and a synthetic provider server, not genuine LLM runs. They cover cross-process dedupe/approval, 500 random money examples, boundaries, malformed output, supersession, uncertain dispatch, recovery, trust and calibration.
 
 Read `DESIGN.md` (under three pages), `REVIEW.md`, `AI-LOG.md`, `TEAM-PLAN.md` (one page) and `LOOM-SCRIPT.md`. Exported runs preserve source labels and calibration; historical fixture suites remain, so select the newest version.
 
-The database is ignored at `data/trust-desk.sqlite`; fresh reviewers rebuild fixtures with three startup commands. Submit repository or zip **including `.git`**, with an 8–12 minute Loom URL. Exclude `.env`, `.tools`, `node_modules` and `.next`.
+The database is ignored at `data/trust-desk.sqlite`; fresh reviewers restore recorded evidence from `artifacts/stored-data.json` with three startup commands. Submit repository or zip **including `.git`**, with an 8–12 minute Loom URL. Exclude `.env`, `.tools`, `node_modules` and `.next`.

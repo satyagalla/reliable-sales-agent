@@ -1,30 +1,30 @@
 {
-  "at": "2026-10-29T21:22:52.277Z",
+  "at": "2026-10-29T23:20:33.957Z",
   "base": "http://127.0.0.1:3000",
   "method": "HTTP assertions; no browser visual inspection",
   "results": [
     {
       "route": "/",
       "status": 200,
-      "bytes": 60662,
+      "bytes": 67154,
       "rtl_markup": true
     },
     {
       "route": "/?tenant=rimal",
       "status": 200,
-      "bytes": 49802,
+      "bytes": 57476,
       "rtl_markup": true
     },
     {
       "route": "/quality",
       "status": 200,
-      "bytes": 410431,
+      "bytes": 499842,
       "rtl_markup": true
     },
     {
       "route": "/audit",
       "status": 200,
-      "bytes": 162065,
+      "bytes": 4084020,
       "rtl_markup": false
     },
     {

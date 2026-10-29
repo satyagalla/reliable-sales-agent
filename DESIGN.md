@@ -6,6 +6,8 @@ The LLM proposes typed intent, catalogue IDs, quantities, periods, language, ris
 
 Outbound copy uses deterministic templates and calculated amounts. Raw model prose remains visible for review/judging but cannot introduce an autonomous promise. Human edits are attributed. All quotes need review because schema validation cannot prove correct quantities/periods. Only low-risk FAQ replies assembled from tenant facts qualify for autonomy.
 
+The genuine local adapter uses authenticated CLI inference with strict schema, isolated context, one turn and disabled tools; observed tool activity fails closed. The alternative HTTP adapter uses Structured Outputs. Both store prompt hash, model, parameters, response ID, measured tokens/latency and failure provenance. Subscription CLI dollar cost is unknown. Neither adapter runs implementation tools or model repair loops.
+
 ## Storage and concurrency
 
 SQLite WAL avoids server setup. Tables store tenants, scoped prices, durable events, versioned drafts, outbox, audit, evaluation runs/results and trust history. Short synchronous `BEGIN IMMEDIATE` transactions use foreign keys and bounded busy waits. External calls never hold transactions.
@@ -17,6 +19,8 @@ Ingestion requires a fresh signed raw body and constant-time HMAC comparison. Au
 New messages invalidate queued work and reviewable drafts and cancel pending outbound. Workers claim tokens with 90-second leases; results commit only with current tokens. Latest twenty messages supply correction context. Approval atomically checks tenant, named approver, version, state and latest message before recording edits and inserting a unique outbox row.
 
 Dispatch durably claims before transport. Claimed/uncertain rows never retry. This is **at-most-once attempts**, accepting possible loss after claim to avoid duplicates. Claim is the linearization point: supersession cannot retract an already claimed send. Transport is a local receipt sink; real integration needs recipient addressing, credentials and delivery semantics.
+
+Committed snapshots preserve recorded drafts, runs, audit and labels for offline startup. Restore applies only to an empty database, resets trust to supervised, cancels pending deliveries and supersedes unfinished jobs. It does not replay inference or dispatch.
 
 ## Deterministic rules
 
@@ -38,4 +42,4 @@ Per-tenant gates require no deterministic failures, no zero scores, no unassessa
 
 **Arabic:** Unicode and Arabic/Persian-digit normalization, bidi-control removal, dimension/Arabizi cases, local currencies and RTL reply/edit surfaces. Arabic FAQ translations/cautious templates are authored in code. Dialect interpretation still needs evaluation and human review.
 
-Loopback pickers simulate identity, HMAC simulates a gateway, audit is append-only by convention rather than tamper-proof. No deployment, real channel integration, semantic memory, cost router or multi-agent orchestration. Provider runs, personal calibration, original-handler lines, visual checks and Loom must be reported by actual completion.
+Loopback pickers simulate identity, HMAC simulates a gateway, audit is append-only by convention rather than tamper-proof. No deployment, real channel integration, semantic memory, cost router or multi-agent orchestration. Genuine CLI runs are stored; personal calibration, original-handler lines, visual checks and Loom must be reported by actual completion.
