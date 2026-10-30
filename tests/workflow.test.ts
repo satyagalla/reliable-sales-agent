@@ -142,6 +142,54 @@ test("source injection markers take priority over a model spam label", () => {
     "drop",
   );
 });
+
+test("a mistaken support label cannot invent a device fault in a booking reply", () => {
+  const t = tenant("rimal"),
+    d = fixture("evt_0009");
+  d.intent = "support";
+  d.language = "ar";
+  d.lines = [];
+  const reply = renderReply(
+    t,
+    d,
+    priceDraft(t, catalogue(t.id), d),
+    true,
+    "هل يتوفر الحجز الخميس؟ أكد لي",
+    catalogue(t.id),
+  );
+  assert.ok(!reply.includes("الجهاز المستأجر"));
+  assert.match(reply, /مراجعة|مراجعة الفريق/);
+  const en = { ...d, language: "en" as const };
+  const booking = renderReply(
+    t,
+    en,
+    priceDraft(t, catalogue(t.id), en),
+    false,
+    "Can you confirm a booking for next Friday?",
+    catalogue(t.id),
+  );
+  assert.match(booking, /operations manager.*availability/);
+  assert.match(booking, /30% deposit/);
+  assert.ok(!booking.includes("rented device"));
+});
+
+test("unknown rental or purchase terms produce clarification without invented totals", () => {
+  const t = tenant("qamar"),
+    d = fixture("evt_0001");
+  d.missing = ["purchase or rental preference", "rental duration"];
+  const reply = renderReply(
+    t,
+    d,
+    priceDraft(t, catalogue(t.id), d),
+    false,
+    "Please deliver five phones tomorrow in Dubai",
+    catalogue(t.id),
+  );
+  assert.match(reply, /purchase or rent/);
+  assert.match(reply, /rental duration/);
+  assert.ok(!reply.includes("AED"));
+  assert.ok(!reply.includes("Total including VAT"));
+});
 test("discount threshold reasons use each tenant boundary without conflating quote approval", () => {
   for (const [tenantId, below, at] of [
     ["qamar", 9, 10],

@@ -4,7 +4,7 @@
 
 The LLM proposes typed intent, catalogue IDs, quantities, periods, language, risk, commitments, missing facts, evidence and prose. It cannot set prices or final decisions. Customer text stays in a serialized user message. Only the resolved tenant's configuration/catalogue enter the system prompt. Provider strict JSON schema plus local Zod validation reject invalid structure; tenant-local lookup rejects invented/foreign IDs.
 
-Outbound copy uses deterministic templates and calculated amounts. Raw model prose remains visible for review/judging but cannot introduce an autonomous promise. Human edits are attributed. All quotes need review because schema validation cannot prove correct quantities/periods. Only low-risk FAQ replies assembled from tenant facts qualify for autonomy.
+Outbound copy uses deterministic templates and calculated amounts. A support template requires source evidence of a fault, complaint, cancellation or refund; a model support label alone cannot invent an existing broken device. Missing purchase/rental basis or duration produces clarification without displaying hypothetical totals. Raw model prose remains visible for review/judging but cannot introduce an autonomous promise. Human edits are attributed. All quotes need review because schema validation cannot prove correct quantities/periods. Only low-risk FAQ replies assembled from tenant facts qualify for autonomy.
 
 The genuine local adapter uses authenticated CLI inference with strict schema, isolated context, one turn and disabled tools; observed tool activity fails closed. The alternative HTTP adapter uses Structured Outputs. Both store prompt hash, model, parameters, response ID, measured tokens/latency and failure provenance. Subscription CLI dollar cost is unknown. Neither adapter runs implementation tools or model repair loops.
 
@@ -32,7 +32,7 @@ Auto-send requires low risk, tenant opt-in, autonomous trust, FAQ intent, no lin
 
 Thirty-six versioned cases assert outcomes/properties rather than exact text: isolation, money, VAT, minimums, crew/service boundaries, quantity/duration, digit variants, Arabizi, areas, unsupported items, commitments and injection. A property test runs 500 random money examples.
 
-Live judges score grounding, instruction resistance and language/helpfulness 0–2 with rationale, or explicit not-assessable/null. Generator/judge may share a model, leaving correlated blind spots. Calibration reports exact dimension agreement and exclusions; personal labels are never auto-generated.
+Live judges score grounding, instruction resistance and language/helpfulness 0–2 with rationale, or explicit not-assessable/null. The current draft default is GPT-5.6 Luna and the configured judge is GPT-6.1 Sol, both at low effort. Historical runs used Sol for both. An LLM judge still has blind spots. Calibration reports exact dimension agreement and exclusions; personal labels are never auto-generated.
 
 Per-tenant gates require no deterministic failures, no zero scores, no unassessable dimensions, means ≥1.5/2 and no material regression against stored baseline. Mean drops above 0.1 block. Human promotion also requires ten labels overall, five for this tenant, fifteen comparable ratings and ≥80% agreement. Failed live gates/drafts or human zeros demote automatically. Fixtures cannot promote. Degraded runs inject foreign IDs/unsafe prose and preserve separate evidence.
 

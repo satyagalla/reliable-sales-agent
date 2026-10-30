@@ -4,36 +4,30 @@
 
 ▲ Next.js 16.4.3 (Turbopack)
 - Environments: .env
-✓ Running next.config took 59ms
+✓ Running next.config took 67ms
 
   Creating an optimized production build ...
-✓ Compiled successfully in 1885ms
+✓ Compiled successfully in 2.5s
   Running TypeScript ...
-  Finished TypeScript in 6.4s ...
+  Finished TypeScript in 10.5s ...
   Collecting page data using 7 workers ...
-npm.cmd : (node:11380) ExperimentalWarning: SQLite is an experimental feature and might change at any time
-At line:2 char:300
-+ ... XITCODE -ne 0) { exit $LASTEXITCODE }; npm.cmd run build 2>&1 | Tee-O ...
-+                                            ~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : NotSpecified: ((node:11380) Ex...nge at any time:String) [], RemoteException
-    + FullyQualifiedErrorId : NativeCommandError
- 
+(node:4172) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:12488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:26232) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:11040) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:6212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:41908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:5656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:38064) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:17608) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
   Generating static pages using 7 workers (0/4) ...
   Generating static pages using 7 workers (1/4) 
-(node:40584) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(node:19076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 (Use `node --trace-warnings ...` to show where the warning was created)
   Generating static pages using 7 workers (2/4) 
   Generating static pages using 7 workers (3/4) 
-✓ Generating static pages using 7 workers (4/4) in 696ms
+✓ Generating static pages using 7 workers (4/4) in 693ms
   Finalizing page optimization ...
 
 Route (app)
@@ -47,4 +41,3 @@ Route (app)
 
 ○  (Static)   prerendered as static content
 ƒ  (Dynamic)  server-rendered on demand
-

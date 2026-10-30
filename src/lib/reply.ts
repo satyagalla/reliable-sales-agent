@@ -1,4 +1,12 @@
-import { Draft, Tenant, Price, money, normalize } from "./domain";
+import {
+  Draft,
+  Tenant,
+  Price,
+  money,
+  normalize,
+  isSupportRequest,
+  unresolvedPriceBasis,
+} from "./domain";
 import type { Pricing } from "./policy";
 
 const arabicFaq: Record<string, string[]> = {
@@ -91,7 +99,7 @@ export function renderReply(
             "I cannot act on instruction overrides, disclose internal instructions, or confirm an unauthorized discount or delivery. For a business enquiry, please provide the item, quantity, rental duration or purchase preference, and delivery city.",
             "لا يمكنني تنفيذ أوامر تجاوز التعليمات أو كشف التعليمات الداخلية أو تأكيد خصم أو تسليم غير معتمد. لطلب تجاري، يرجى تحديد الصنف والكمية ومدة الإيجار أو الرغبة في الشراء ومدينة التوصيل.",
           );
-    if (d.intent === "support") {
+    if (d.intent === "support" && isSupportRequest(customerText)) {
       const contract = customerText.match(/\bQD-\d+\b/i)?.[0];
       return choose(
         `Sorry to hear about the issue with your rented device.${contract ? " Please keep contract " + contract + " available." : ""} This needs the support team’s review, rather than a new sales quote. Please share a preferred callback time; the team must confirm the arrangements.`,
@@ -156,6 +164,17 @@ export function renderReply(
       "يحتاج الصنف المطلوب أو المتطلبات إلى مراجعة الفريق. يرجى تحديد صنف الكتالوج والكمية والمدة والموقع؛ لم يتم تأكيد أي حجز أو تسليم.",
     );
   }
+  // A model intent alone must not invent an existing rental or a device fault.
+  if (
+    t.id === "rimal" &&
+    !p.lines.length &&
+    !isSupportRequest(customerText) &&
+    /book|availab|deposit|حجز|متوفر|تتوفر|يتوفر|عربون/.test(text)
+  )
+    return choose(
+      "Only the operations manager confirms availability; this is not a booking confirmation. Please provide the catalogue equipment and quantities, exact event date, number of event days and Riyadh site address. A 30% deposit confirms a booking after availability is verified.",
+      "مدير العمليات وحده يؤكد التوفر؛ هذه الرسالة لا تؤكد الحجز. يرجى تحديد المعدات والكميات من الكتالوج، والتاريخ الدقيق للفعالية، وعدد أيامها، وعنوان الموقع في الرياض. دفعة مقدمة 30% تؤكد الحجز بعد التحقق من التوفر.",
+    );
   if (d.intent === "faq" && !p.lines.length) {
     let index: number | undefined;
     if (t.id === "qamar") {
@@ -179,7 +198,8 @@ export function renderReply(
       "Only the operations manager can confirm availability; this is not a booking confirmation. Please provide the catalogue equipment and quantities, exact event date, number of event days and Riyadh site address. A 30% deposit confirms a booking after availability is verified.",
       "مدير العمليات وحده يؤكد التوفر؛ هذه الرسالة لا تؤكد الحجز. يرجى تحديد المعدات والكميات من الكتالوج، والتاريخ الدقيق للفعالية، وعدد أيامها، وعنوان الموقع في الرياض. دفعة مقدمة 30% تؤكد الحجز بعد التحقق من التوفر.",
     );
-  if (!p.lines.length)
+  // Incomplete pricing inputs are a clarification, never a priced assumption.
+  if (!p.lines.length || unresolvedPriceBasis(d))
     return [
       choose(
         "To prepare an indicative quote, please clarify the following requirements. No booking, availability, or delivery is confirmed.",

@@ -1,5 +1,5 @@
 {
-  "at": "2026-10-29T23:20:33.957Z",
+  "at": "2026-10-29T23:59:54.242Z",
   "base": "http://127.0.0.1:3000",
   "method": "HTTP assertions; no browser visual inspection",
   "results": [
@@ -18,13 +18,13 @@
     {
       "route": "/quality",
       "status": 200,
-      "bytes": 499842,
+      "bytes": 111742,
       "rtl_markup": true
     },
     {
       "route": "/audit",
       "status": 200,
-      "bytes": 4084020,
+      "bytes": 5165970,
       "rtl_markup": false
     },
     {

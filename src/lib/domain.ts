@@ -68,6 +68,18 @@ export type Price = {
 };
 export type Decision = "auto_send" | "needs_approval" | "hand_off" | "drop";
 export type Trust = "supervised" | "autonomous";
+export function isSupportRequest(text: string) {
+  return /\b(fault|broken|flicker\w*|repair|refund|complaint|cancel\w*|not working|doesn.t work)\b|عطل|معطل|لا يعمل|خلل|شكوى|استرداد|إلغاء|الغاء|وميض|تومض/i.test(
+    normalize(text),
+  );
+}
+export function unresolvedPriceBasis(d: Draft) {
+  return d.missing.some((value) =>
+    /\b(mode|duration|periods?|months?|days?|purchase|rent(?:al)?)\b|شراء|استئجار|مدة|عدد.*أيام/i.test(
+      normalize(value),
+    ),
+  );
+}
 export function normalize(text: string) {
   return text
     .normalize("NFKC")

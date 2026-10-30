@@ -6,201 +6,213 @@ TAP version 13
 # Subtest: CLI adapter accepts one measured inference and rejects tools or extra turns
 ok 1 - CLI adapter accepts one measured inference and rejects tools or extra turns
   ---
-  duration_ms: 3.8646
+  duration_ms: 19.2969
   type: 'test'
   ...
 # Subtest: CLI subprocess uses structured files, no shell, isolated context and tool-disable flags
 ok 2 - CLI subprocess uses structured files, no shell, isolated context and tool-disable flags
   ---
-  duration_ms: 360.8279
+  duration_ms: 847.8138
   type: 'test'
   ...
-# (node:22148) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:42848) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: provider adapter makes one structured call, isolates catalogue, separates untrusted input, and audits usage
 ok 3 - provider adapter makes one structured call, isolates catalogue, separates untrusted input, and audits usage
   ---
-  duration_ms: 211.7996
+  duration_ms: 406.8242
   type: 'test'
   ...
 # Subtest: malformed and refused model outputs fail closed and still record provenance
 ok 4 - malformed and refused model outputs fail closed and still record provenance
   ---
-  duration_ms: 45.4629
+  duration_ms: 53.6596
   type: 'test'
   ...
-# (node:12048) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:41840) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: offline restore preserves genuine evidence without replaying jobs or deliveries or promoting trust
 ok 5 - offline restore preserves genuine evidence without replaying jobs or deliveries or promoting trust
   ---
-  duration_ms: 13.9647
+  duration_ms: 14.166
   type: 'test'
   ...
-# (node:15812) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (node:22216) ExperimentalWarning: SQLite is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: signature fails closed, expires, and binds every byte
 ok 6 - signature fails closed, expires, and binds every byte
   ---
-  duration_ms: 8.3491
+  duration_ms: 11.8604
   type: 'test'
   ...
 # Subtest: reviewer origin accepts the actual loopback host and rejects cross-origin, null and hostile hosts
 ok 7 - reviewer origin accepts the actual loopback host and rejects cross-origin, null and hostile hosts
   ---
-  duration_ms: 0.7489
+  duration_ms: 0.9466
   type: 'test'
   ...
 # Subtest: hand-off replies do not offer out-of-area prices or commitments
 ok 8 - hand-off replies do not offer out-of-area prices or commitments
   ---
-  duration_ms: 4.6992
+  duration_ms: 7.4212
   type: 'test'
   ...
 # Subtest: source injection markers take priority over a model spam label
 ok 9 - source injection markers take priority over a model spam label
   ---
-  duration_ms: 1.5511
+  duration_ms: 2.3388
+  type: 'test'
+  ...
+# Subtest: a mistaken support label cannot invent a device fault in a booking reply
+ok 10 - a mistaken support label cannot invent a device fault in a booking reply
+  ---
+  duration_ms: 3.9965
+  type: 'test'
+  ...
+# Subtest: unknown rental or purchase terms produce clarification without invented totals
+ok 11 - unknown rental or purchase terms produce clarification without invented totals
+  ---
+  duration_ms: 3.041
   type: 'test'
   ...
 # Subtest: discount threshold reasons use each tenant boundary without conflating quote approval
-ok 10 - discount threshold reasons use each tenant boundary without conflating quote approval
+ok 12 - discount threshold reasons use each tenant boundary without conflating quote approval
   ---
-  duration_ms: 2.7966
+  duration_ms: 5.9506
   type: 'test'
   ...
 # Subtest: Rimal accepts exactly SAR 2000 before VAT and rejects a discounted total below it
-ok 11 - Rimal accepts exactly SAR 2000 before VAT and rejects a discounted total below it
+ok 13 - Rimal accepts exactly SAR 2000 before VAT and rejects a discounted total below it
   ---
-  duration_ms: 1.2045
+  duration_ms: 2.6357
   type: 'test'
   ...
 # Subtest: outbound replies answer the relevant FAQ and retain useful catalogue units without model prose
-ok 12 - outbound replies answer the relevant FAQ and retain useful catalogue units without model prose
+ok 14 - outbound replies answer the relevant FAQ and retain useful catalogue units without model prose
   ---
-  duration_ms: 59.9415
+  duration_ms: 69.129
   type: 'test'
   ...
 # Subtest: four simultaneous processes dedupe using the database constraint
-ok 13 - four simultaneous processes dedupe using the database constraint
+ok 15 - four simultaneous processes dedupe using the database constraint
   ---
-  duration_ms: 829.8153
+  duration_ms: 1061.6838
   type: 'test'
   ...
 # Subtest: tenant derives from channel recipient, ignores spoofed metadata and rejects unknown recipients
-ok 14 - tenant derives from channel recipient, ignores spoofed metadata and rejects unknown recipients
+ok 16 - tenant derives from channel recipient, ignores spoofed metadata and rejects unknown recipients
   ---
-  duration_ms: 12.06
+  duration_ms: 12.9771
   type: 'test'
   ...
 # Subtest: minor-unit money holds for random quantities and durations; service is once, VAT half-up
-ok 15 - minor-unit money holds for random quantities and durations; service is once, VAT half-up
+ok 17 - minor-unit money holds for random quantities and durations; service is once, VAT half-up
   ---
-  duration_ms: 155.7691
+  duration_ms: 175.8071
   type: 'test'
   ...
 # Subtest: strict draft schema rejects invented fields, fractional and negative quantities
-ok 16 - strict draft schema rejects invented fields, fractional and negative quantities
+ok 18 - strict draft schema rejects invented fields, fractional and negative quantities
   ---
-  duration_ms: 5.7126
+  duration_ms: 10.4997
   type: 'test'
   ...
 # Subtest: Rimal 15% VAT, minimum, and crew area boundaries are deterministic
-ok 17 - Rimal 15% VAT, minimum, and crew area boundaries are deterministic
+ok 19 - Rimal 15% VAT, minimum, and crew area boundaries are deterministic
   ---
-  duration_ms: 1.7978
+  duration_ms: 2.638
   type: 'test'
   ...
 # Subtest: autonomous requires all three conditions; quotes and commitments always need approval
-ok 18 - autonomous requires all three conditions; quotes and commitments always need approval
+ok 20 - autonomous requires all three conditions; quotes and commitments always need approval
   ---
-  duration_ms: 1.36
+  duration_ms: 1.8995
   type: 'test'
   ...
 # Subtest: Arabic/Persian digits normalize and outbound totals stay in RTL-friendly Arabic
-ok 19 - Arabic/Persian digits normalize and outbound totals stay in RTL-friendly Arabic
+ok 21 - Arabic/Persian digits normalize and outbound totals stay in RTL-friendly Arabic
   ---
-  duration_ms: 2.4048
+  duration_ms: 2.849
   type: 'test'
   ...
 # Subtest: superseded worker result cannot create a draft or be approved
-ok 20 - superseded worker result cannot create a draft or be approved
+ok 22 - superseded worker result cannot create a draft or be approved
   ---
-  duration_ms: 10.8376
+  duration_ms: 12.9955
   type: 'test'
   ...
 # Subtest: concurrent approvals commit one decision and exactly one outbox record
-ok 21 - concurrent approvals commit one decision and exactly one outbox record
+ok 23 - concurrent approvals commit one decision and exactly one outbox record
   ---
-  duration_ms: 732.5291
+  duration_ms: 1031.1376
   type: 'test'
   ...
 # Subtest: uncertain outbound delivery never retries after a transport error
-ok 22 - uncertain outbound delivery never retries after a transport error
+ok 24 - uncertain outbound delivery never retries after a transport error
   ---
-  duration_ms: 5.3472
+  duration_ms: 5.3964
   type: 'test'
   ...
 # Subtest: new customer message cancels pending outbound before dispatch
-ok 23 - new customer message cancels pending outbound before dispatch
+ok 25 - new customer message cancels pending outbound before dispatch
   ---
-  duration_ms: 12.25
+  duration_ms: 13.9688
   type: 'test'
   ...
 # Subtest: approval audit failure rolls back both the decision and outbox
-ok 24 - approval audit failure rolls back both the decision and outbox
+ok 26 - approval audit failure rolls back both the decision and outbox
   ---
-  duration_ms: 11.4447
+  duration_ms: 13.1997
   type: 'test'
   ...
 # Subtest: simultaneous dispatchers make one transport attempt
-ok 25 - simultaneous dispatchers make one transport attempt
+ok 27 - simultaneous dispatchers make one transport attempt
   ---
-  duration_ms: 36.1746
+  duration_ms: 39.987
   type: 'test'
   ...
 # Subtest: expired lease becomes dead letter after bounded attempts
-ok 26 - expired lease becomes dead letter after bounded attempts
+ok 28 - expired lease becomes dead letter after bounded attempts
   ---
-  duration_ms: 6.9483
+  duration_ms: 9.3113
   type: 'test'
   ...
 # Subtest: trust cannot promote without live evidence; calibration excludes not assessable dimensions
-ok 27 - trust cannot promote without live evidence; calibration excludes not assessable dimensions
+ok 29 - trust cannot promote without live evidence; calibration excludes not assessable dimensions
   ---
-  duration_ms: 5.7185
+  duration_ms: 6.5082
   type: 'test'
   ...
 # Subtest: 36 versioned baseline cases pass; deliberately degraded run is rejected
-ok 28 - 36 versioned baseline cases pass; deliberately degraded run is rejected
+ok 30 - 36 versioned baseline cases pass; deliberately degraded run is rejected
   ---
-  duration_ms: 215.4808
+  duration_ms: 248.0007
   type: 'test'
   ...
 # Subtest: judge score drops are regression failures even when hard checks still pass
-ok 29 - judge score drops are regression failures even when hard checks still pass
+ok 31 - judge score drops are regression failures even when hard checks still pass
   ---
-  duration_ms: 0.464
+  duration_ms: 0.5049
   type: 'test'
   ...
 # Subtest: human-only promotion uses per-tenant evidence; a zero human score automatically demotes
-ok 30 - human-only promotion uses per-tenant evidence; a zero human score automatically demotes
+ok 32 - human-only promotion uses per-tenant evidence; a zero human score automatically demotes
   ---
-  duration_ms: 21.8122
+  duration_ms: 25.7284
   type: 'test'
   ...
 # Subtest: saving an unsafe human label and demoting trust are one atomic operation
-ok 31 - saving an unsafe human label and demoting trust are one atomic operation
+ok 33 - saving an unsafe human label and demoting trust are one atomic operation
   ---
-  duration_ms: 8.4654
+  duration_ms: 10.2149
   type: 'test'
   ...
-1..31
-# tests 31
+1..33
+# tests 33
 # suites 0
-# pass 31
+# pass 33
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 3668.0108
+# duration_ms 4571.4713

@@ -67,6 +67,7 @@ test("provider adapter makes one structured call, isolates catalogue, separates 
     assert.equal(output.lines[0].row_id, "Q-LAP-001");
     assert.equal(request.response_format.json_schema.strict, true);
     assert.equal(request.max_completion_tokens, 3000);
+    assert.equal(request.reasoning_effort, "low");
     assert.equal(request.temperature, undefined);
     assert.ok(
       !request.messages[0].content.includes("UNTRUSTED_CUSTOMER_SENTINEL"),
