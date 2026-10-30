@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-30T19:17:19.514151+00:00",
+  "node": "24.20.0",
+  "tests": {
+    "passed": 33,
+    "failed": 0
+  },
+  "typecheck": "passed",
+  "production_build": "passed",
+  "http_checks": 8,
+  "offline_restore": "passed",
+  "assessment_provenance": "Satya explicitly adopted assistant-proposed ratings and rationales; entered by agent at user request",
+  "assessment_count": 10,
+  "agreement": {
+    "qamar": "15/15",
+    "rimal": "13/15",
+    "overall": "28/30"
+  },
+  "browser_checks": {
+    "status": "user-reported pass",
+    "agent_observed": false
+  },
+  "pending_local_deliveries": 9,
+  "loom_url": null,
+  "original_handler_source": "not supplied"
+}

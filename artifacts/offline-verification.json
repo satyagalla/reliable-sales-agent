@@ -1,12 +1,12 @@
 {
-  "at": "2026-10-30T00:07:51.898Z",
+  "at": "2026-10-30T19:16:11.493Z",
   "method": "Fresh temporary SQLite database; seed twice; no API credential or available CLI executable",
   "tables": {
     "events": 12,
     "drafts": 23,
     "runs": 14,
     "results": 504,
-    "outbox": 0,
+    "outbox": 9,
     "trust_history": 0
   },
   "recorded_model_attempts": 446,

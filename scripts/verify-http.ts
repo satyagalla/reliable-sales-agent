@@ -3,7 +3,8 @@ import { mkdirSync, writeFileSync } from "node:fs";
 const base = process.env.APP_URL || "http://127.0.0.1:3000";
 async function main() {
   const results: unknown[] = [];
-  for (const route of ["/", "/?tenant=rimal", "/quality", "/audit"]) {
+  // Completed reviews leave the waiting queue empty; history retains RTL replies.
+  for (const route of ["/?status=all", "/?tenant=rimal&status=all", "/quality", "/audit"]) {
     const r = await fetch(base + route),
       html = await r.text();
     assert.equal(r.status, 200, route);
